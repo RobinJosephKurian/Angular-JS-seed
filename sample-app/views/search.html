@@ -1,0 +1,26 @@
+<nav class="navbar fixed-top navbar-dark one-edge-shadow search-nav">
+    <span class="nav-wrapper">
+        <a ui-sref="home">
+            <img src="image/Back.png" />
+        </a>
+        <span class="navbar-brand mb-0">
+            <input ng-model="searchKey" placeholder="Search" ng-model-options="{debounce: 500}" ng-change="getSearchData()">
+        </span>
+        <a ng-click="clearSearchKey()">
+            <img src="image/close_button.png">
+        </a>
+    </span>
+</nav>
+<div class="container" lazy-scroll="loadMore()" lazy-scroll-trigger="80">
+    <div class="row" ng-repeat="rows in ChunkedData track by $index">
+        <div class="col-4" ng-repeat="item in rows track by $index" ng-click="showFeatureInProgress()">
+            <img ng-src="image/{{ item['poster-image'] }}" onerror="this.src='image/missing_posters.png'" />
+            <p>{{ item['name'] }}</p>
+        </div>
+    </div>
+    <div class="row empty-data text-center" ng-if="ChunkedData.length == 0">
+        <div class="col">
+            <span>No Result Found</span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8" />
+        <meta name="author" content="Robin" />
+        <title>Sample video App</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+        <link rel="stylesheet" href="plugins/bootstrap-4.0.0-dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="plugins/snackbar/snackbar.css" />
+
+        <link rel="stylesheet" href="css/style.css" />
+</head>
+<body ng-app="sample-video-app" ng-controller="BaseController">
+
+    <div ui-view ng-class="{back: back}"></div>
+
+     <!-- Snackbar Directive -->
+     <div class="snackbar-container" data-snackbar="true" data-snackbar-duration="4000" data-snackbar-remove-delay="2000"></div>
+    </div>
+    
+    <script src="plugins/angular.js"></script>
+    <script src="plugins/angular-animate.min.js"></script>
+    <script src="plugins/angular-ui-router.min.js"></script>
+    <script src="plugins/jquery-3.2.1.slim.min.js"></script>
+    <script src="plugins/proper-1.12.9.min.js"></script>
+    <script src="plugins/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    <script src="plugins/lazy-scroll.js"></script>
+    <script src="plugins/snackbar/snackbar.js"></script>
+
+    <script src="js/app.js"></script>    
+    <script src="js/dataService.js"></script>    
+    <script src="js/baseController.js"></script>    
+    <script src="js/homeController.js"></script>    
+    <script src="js/searchController.js"></script>    
+</body>
+</html>
