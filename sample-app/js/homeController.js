@@ -57,16 +57,23 @@ app.controller("HomeController", ["$scope", "$filter", "snackbar", "DataService"
     $scope.loadMore = function () {
         if($scope.MoreData) {    
             $scope.RequestPage++;
-            var response         = angular.copy(DataService.getDataByPage($scope.RequestPage));
-            response.page["content-items"].content = $scope.RemainingData.concat(response.page["content-items"].content);
-            var filteredData     = _getDataMultiple(response.page["content-items"].content);
-            $scope.DisplayData   = filteredData.displayData;
-            $scope.RemainingData = filteredData.remainingData;
-            $scope.ChunkedData   = $scope.ChunkedData.concat(_chunk($scope.DisplayData, $scope.CHUNK_SIZE));
+            DataService.getDataByPage($scope.RequestPage, _onGetDataSuccess, _onError);
+        }
+    };
 
-            if(response.page["content-items"].content.length < 20) {
-                $scope.MoreData = false;
-            }
+    /**
+     * On success data from the server
+     * @param {*} response 
+     */
+    var _onGetDataSuccess = function (response) {
+        response.page["content-items"].content = $scope.RemainingData.concat(response.page["content-items"].content);
+        var filteredData     = _getDataMultiple(response.page["content-items"].content);
+        $scope.DisplayData   = filteredData.displayData;
+        $scope.RemainingData = filteredData.remainingData;
+        $scope.ChunkedData   = $scope.ChunkedData.concat(_chunk($scope.DisplayData, $scope.CHUNK_SIZE));
+
+        if(response.page["content-items"].content.length < 20) {
+            $scope.MoreData = false;
         }
     };
 
@@ -75,12 +82,26 @@ app.controller("HomeController", ["$scope", "$filter", "snackbar", "DataService"
     */
     $scope.init = function () {
         $scope.RequestPage = 1;
-        var response         = angular.copy(DataService.getDataByPage($scope.RequestPage));
+        DataService.getDataByPage($scope.RequestPage, _onInit, _onError);
+    };
+
+    /**
+     * Function to call on success callback
+     * @param {*} response 
+     */
+    var _onInit = function (response) {
         var filteredData     = _getDataMultiple(response.page["content-items"].content);
 
         $scope.Title         = response.page.title;
         $scope.DisplayData   = filteredData.displayData;
         $scope.RemainingData = filteredData.remainingData;
         $scope.ChunkedData = _chunk($scope.DisplayData, $scope.CHUNK_SIZE);
+    };
+
+    /**
+     * function call when the API call breaks
+     */
+    var _onError = function () {
+        snackbar.create("Failed to retrive data!");
     };
 }]);

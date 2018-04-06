@@ -70,18 +70,24 @@ app.controller("SearchController", ["$scope", "$filter", "snackbar", "DataServic
     $scope.loadMore = function () { 
 		if($scope.MoreData) {  
 			$scope.RequestPage++; 
-			var response         = angular.copy(DataService.getDataBySearch($scope.searchKey, $scope.RequestPage));
-			response.page["content-items"].content = $scope.RemainingData.concat(response.page["content-items"].content);
-			var filteredData     = _getDataMultiple(response.page["content-items"].content);
-			$scope.DisplayData   = filteredData.displayData;
-			$scope.RemainingData = filteredData.remainingData;
-			$scope.ChunkedData   = $scope.ChunkedData.concat(_chunk($scope.DisplayData, $scope.CHUNK_SIZE));
-
-			if($scope.RemainingData. length == 0 && response.page["content-items"].content.length < 20) {
-				$scope.MoreData = false;
-			}
+			DataService.getDataBySearch($scope.searchKey, $scope.RequestPage, _onLoadMoreData, _onError);
 		}
-    };
+	};
+	
+	/**
+	 * on get more data from API JSON
+	 */
+	_onLoadMoreData = function (response) {
+		response.page["content-items"].content = $scope.RemainingData.concat(response.page["content-items"].content);
+		var filteredData     = _getDataMultiple(response.page["content-items"].content);
+		$scope.DisplayData   = filteredData.displayData;
+		$scope.RemainingData = filteredData.remainingData;
+		$scope.ChunkedData   = $scope.ChunkedData.concat(_chunk($scope.DisplayData, $scope.CHUNK_SIZE));
+
+		if($scope.RemainingData.length == 0 && response.page["content-items"].content.length < 20) {
+			$scope.MoreData = false;
+		}
+	};
 
 	/**
 	 * To filter the videos matching the string
@@ -90,16 +96,31 @@ app.controller("SearchController", ["$scope", "$filter", "snackbar", "DataServic
 		_initializeData();
 		if($scope.searchKey != "") {
 			
-			var response         = angular.copy(DataService.getDataBySearch($scope.searchKey, $scope.RequestPage));
-			var filteredData     = _getDataMultiple(response.page["content-items"].content);
-	
-			$scope.DisplayData   = filteredData.displayData;
-			$scope.RemainingData = filteredData.remainingData;
-			$scope.ChunkedData = _chunk($scope.DisplayData, $scope.CHUNK_SIZE);
+			DataService.getDataBySearch($scope.searchKey, $scope.RequestPage, _onGetSearchData, _onError);
 			
-			if($scope.RemainingData. length == 0 && response.page["content-items"].content.length < 20) {
-				$scope.MoreData = false;
-			}
 		}
+	};
+	
+	/**
+	 * On get Search data from API JSON
+	 * @param {*} response 
+	 */
+	var _onGetSearchData = function (response) {
+		var filteredData     = _getDataMultiple(response.page["content-items"].content);
+
+		$scope.DisplayData   = filteredData.displayData;
+		$scope.RemainingData = filteredData.remainingData;
+		$scope.ChunkedData = _chunk($scope.DisplayData, $scope.CHUNK_SIZE);
+		
+		if($scope.RemainingData. length == 0 && response.page["content-items"].content.length < 20) {
+			$scope.MoreData = false;
+		}
+	};
+
+    /**
+     * function call when the API call breaks
+     */
+    var _onError = function () {
+        snackbar.create("Failed to retrive data!");
     };
 }]);
