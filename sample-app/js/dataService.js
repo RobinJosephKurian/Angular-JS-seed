@@ -45,7 +45,10 @@ app.factory('DataService', function ($filter, $http, $q, API_PAGES) {
         return value + "";
     }
 
-    var _allApiData = function (successCB, errorCB) {
+    /**
+     * To call all the async functions together
+     */
+    var _allApiData = function () {
         var promises = [];
         for(var i = 1; i <= API_PAGES; i++) {
             promises.push(_getDataFromJSON(i));
